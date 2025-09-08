@@ -2,7 +2,7 @@ def main():
     print("Hello from relipmoc!")
 
 
-z = 'unused'
+z = "unused"
 if __name__ == "__main__":
     main()
 
