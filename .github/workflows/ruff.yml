@@ -1,10 +1,18 @@
-name: Lint and Format Check
-on: [ push, pull_request ]
+name: Format and Lint Check
+on:
+  push:
+    branches: [ main ] # Only run on main branch pushes
+  pull_request: # Run on all PRs
 jobs:
   ruff:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/ruff-action@v3
+      - name: Install ruff
+        uses: astral-sh/ruff-action@v3
         with:
-          version: 0.12.12
+          args: "--version"
+      - name: Format check
+        run: ruff format --check
+      - name: Lint check
+        run: ruff check --output-format=github
