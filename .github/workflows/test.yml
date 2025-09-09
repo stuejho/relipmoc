@@ -1,4 +1,4 @@
-name: Example
+name: Test
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    name: python
+    name: Run Unit Tests
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
