@@ -16,13 +16,14 @@ source-exclude = ["src/**/test"]
 [dependency-groups]
 dev = [
     { include-group = "lint" },
-    { include-group = "test" }
+    { include-group = "test" },
 ]
 lint = [
     "ruff==0.12.12",
 ]
 test = [
     "pytest==8.4.2",
+    "pytest-cov==6.3.0",
 ]
 
 [tool.ruff.lint]
@@ -40,3 +41,13 @@ select = [
     # isort
     "I",
 ]
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "src/**/__init__.py",
+    "src/**/test/**"
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
