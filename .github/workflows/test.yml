@@ -48,7 +48,7 @@ jobs:
           path: test-results.xml
           reporter: java-junit
 
-      - name: Move coverage to directory for artifact upload
+      - name: Copy Coverage Files to Artifacts Path
         run: |
           mkdir -p ${{ env.PAGES_COVERAGE_PATH }}
           cp -R htmlcov/. ${{ env.PAGES_COVERAGE_PATH }}
