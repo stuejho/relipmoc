@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-24.04
     env:
       PAGES_ARTIFACTS_PATH: _site
-      PAGES_COVERAGE_PATH: ${{ env.PAGES_ARTIFACTS_PATH }}${{ github.event_name == 'pull_request' && format('/{0}', github.event.number) || '' }}/coverage
+      PAGES_COVERAGE_PATH: ${{ github.event_name == 'pull_request' && format('_site/{0}', github.event.number) || '_site' }}/coverage
     permissions:
       contents: read # for dorny/test-reporter
       actions: read # for dorny/test-reporter
