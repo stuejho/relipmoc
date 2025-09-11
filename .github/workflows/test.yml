@@ -14,6 +14,8 @@ jobs:
   test:
     name: Run Unit Tests
     runs-on: ubuntu-24.04
+    env:
+      PAGES_ARTIFACTS_PATH: ${{ github.event_name == 'pull_request' && format('site/pr{0}', github.event.number) || '_site' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -45,3 +47,21 @@ jobs:
           name: Test Results
           path: test-results.xml
           reporter: java-junit
+
+      - name: Move coverage to directory for artifact upload
+        run: |
+          mkdir -p ${{ env.PAGES_ARTIFACTS_PATH }}
+          mv htmlcov {{ env.PAGES_ARTIFACTS_PATH }}/htmlcov
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Test Result Artifacts for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ env.PAGES_ARTIFACTS_PATH }}
+          retention-days: 1
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
