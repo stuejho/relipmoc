@@ -50,7 +50,7 @@ jobs:
       - name: Move coverage to directory for artifact upload
         run: |
           mkdir -p ${{ env.PAGES_ARTIFACTS_PATH }}
-          mv htmlcov ${{ env.PAGES_ARTIFACTS_PATH }}/htmlcov
+          mv htmlcov ${{ env.PAGES_ARTIFACTS_PATH }}/coverage
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v4
