@@ -51,7 +51,7 @@ jobs:
       - name: Move coverage to directory for artifact upload
         run: |
           mkdir -p ${{ env.PAGES_COVERAGE_PATH }}
-          mv htmlcov ${{ env.PAGES_COVERAGE_PATH }}
+          cp -R htmlcov ${{ env.PAGES_COVERAGE_PATH }}
 
       - name: Upload Test Result Artifacts for GitHub Pages
         uses: actions/upload-pages-artifact@v3
