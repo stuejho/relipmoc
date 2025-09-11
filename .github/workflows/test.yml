@@ -9,6 +9,8 @@ permissions:
   contents: read
   actions: read
   checks: write
+  pages: write # needed to deploy to GitHub Pages
+  id-token: write # needed to deploy to GitHub Pages
 
 jobs:
   test:
