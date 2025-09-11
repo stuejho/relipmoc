@@ -32,3 +32,11 @@ jobs:
           --cov=src/relipmoc
           --cov-report=html
           --cov-report=markdown-append:$GITHUB_STEP_SUMMARY
+          --junitxml=test-results.xml
+
+      - name: Report Test Results
+        uses: dorny/test-reporter@v1
+        with:
+          name: Test Results
+          path: test-results.xml
+          reporter: java-junit
