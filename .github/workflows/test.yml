@@ -53,9 +53,6 @@ jobs:
           mkdir -p ${{ env.PAGES_COVERAGE_PATH }}
           mv htmlcov ${{ env.PAGES_COVERAGE_PATH }}
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v4
-
       - name: Upload Test Result Artifacts for GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
@@ -77,6 +74,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
