@@ -1,0 +1,82 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ] # Only run on main branch pushes
+  pull_request: # Run on all PRs
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-24.04
+    env:
+      PAGES_ARTIFACTS_PATH: _site
+      PAGES_COVERAGE_PATH: ${{ github.event_name == 'pull_request' && format('_site/{0}', github.event.number) || '_site' }}/coverage
+    permissions:
+      contents: read # for dorny/test-reporter
+      actions: read # for dorny/test-reporter
+      checks: write # for dorny/test-reporter to write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.15"
+          enable-cache: true
+
+      - name: Sync Dependencies
+        run: uv sync --locked --all-extras --dev
+
+      - name: Run Tests
+        run: >
+          uv run pytest
+          --cov=src/relipmoc
+          --cov-report=html
+          --cov-report=markdown-append:$GITHUB_STEP_SUMMARY
+          --junitxml=test-results.xml
+
+      - name: Report Test Results
+        uses: dorny/test-reporter@v1
+        with:
+          name: Test Results
+          path: test-results.xml
+          reporter: java-junit
+
+      - name: Copy Coverage Files to Artifacts Path
+        run: |
+          mkdir -p ${{ env.PAGES_COVERAGE_PATH }}
+          cp -R htmlcov/. ${{ env.PAGES_COVERAGE_PATH }}
+
+      - name: Upload Test Result Artifacts for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ env.PAGES_ARTIFACTS_PATH }}
+          retention-days: 1
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: test
+    runs-on: ubuntu-24.04
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,35 @@
+name: Format and Lint Check
+
+on:
+  push:
+    branches: [ main ] # Only run on main branch pushes
+  pull_request: # Run on all PRs
+
+jobs:
+  format_check:
+    name: Format Check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ruff using version from pyproject.toml
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: "--version"
+
+      - name: Format check
+        run: ruff format --check
+
+  lint_check:
+    name: Lint Check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ruff using version from pyproject.toml
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: "--version"
+
+      - name: Lint check
+        run: ruff check --output-format=github
