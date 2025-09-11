@@ -5,19 +5,16 @@ on:
     branches: [ main ] # Only run on main branch pushes
   pull_request: # Run on all PRs
 
-permissions:
-  contents: read
-  actions: read
-  checks: write
-  pages: write # needed to deploy to GitHub Pages
-  id-token: write # needed to deploy to GitHub Pages
-
 jobs:
   test:
     name: Run Unit Tests
     runs-on: ubuntu-24.04
     env:
       PAGES_ARTIFACTS_PATH: ${{ github.event_name == 'pull_request' && format('site/pr{0}', github.event.number) || '_site' }}
+    permissions:
+      contents: read # for dorny/test-reporter
+      actions: read # for dorny/test-reporter
+      checks: write # for dorny/test-reporter to write
     steps:
       - uses: actions/checkout@v4
 
@@ -64,6 +61,20 @@ jobs:
           path: ${{ env.PAGES_ARTIFACTS_PATH }}
           retention-days: 1
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  deploy:
+    needs: test
+    runs-on: ubuntu-24.04
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
