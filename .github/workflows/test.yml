@@ -5,6 +5,11 @@ on:
     branches: [ main ] # Only run on main branch pushes
   pull_request: # Run on all PRs
 
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
 jobs:
   test:
     name: Run Unit Tests
